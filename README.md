@@ -2,6 +2,10 @@
 
 This is the example of how to add opengraph to your Chat Engine project using react with the chat engine plugin.
 
+<a href="https://dashboard.pubnub.com/signup?devrel_gh=Chat-Engine-OpenGraph">
+    <img alt="PubNub Signup" src="https://i.imgur.com/og5DDjf.png" width=260 height=97/>
+</a>
+
 ## Getting Started
 
 Here are the list of steps that will get you up and running with the project.
