@@ -18,8 +18,6 @@ import opengraph from 'chat-engine-open-graph';
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
-const apiKey = "5b9afbf1719dea2000a02376";
-
 const ChatClient = ChatEngineCore.create({
     publishKey: 'pub-c-3f89be1a-7cca-4307-8884-80b5b4855b23',
     subscribeKey: 'sub-c-83c785b0-b219-11e8-acd6-a622109c830d'
@@ -33,7 +31,10 @@ ChatClient.connect(username, {
 
 const styles = {
   card: {
-    maxWidth: 345
+    maxWidth: 345,
+    margin: '0 auto', /* Added */
+    float: 'none', /* Added */
+    marginbottom: '10px' /* Added */
   },
   openCard:{
     maxWidth: 200
@@ -64,10 +65,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.chat = new ChatClient.Chat(`openGraph`);
-    this.chat.plugin(opengraph({
-      api: (url) => `https://opengraph.io/api/1.1/site/${encodeURI(url)}?app_id=${apiKey}`,
-    }));
+    this.chat = new ChatClient.Chat(`BasicChatApp`);
 
     this.state = {
       messages: [],
@@ -92,25 +90,11 @@ class App extends Component {
 
   componentDidMount() {
     this.chat.on('message', (payload) => {
-        const { data } = payload;
-        console.log(data);
-        
-        let messages = this.state.messages;
-        if(data.img != null){
-          messages.push(
-            <div key={this.state.messages.length} style={{border: "1px solid grey"}}> { data.uuid }:
-              <img src={data.img} alt={data.title}/>
-              <h3> { data.title } </h3>
-              <a href={ data.url }> link </a>
-              <p> { data.desc } </p>
-            </div>
-          );
-        }else{
-          messages.push(
-            <Message key={ this.state.messages.length } uuid={ payload.data.uuid } text={ payload.data.text }/>
-          );
-        }
 
+        let messages = this.state.messages;
+        messages.push(
+          <Message key={ this.state.messages.length } uuid={ payload.data.uuid } text={ payload.data.text }/>
+        );
         this.setState({
             messages: messages
         });
@@ -127,7 +111,7 @@ class App extends Component {
   render(){
     const { classes } = this.props;
     return(
-      <Card className={classes.card} >
+      <Card className={classes.card}>
           <CardContent>
             <Typography gutterBottom variant="headline" component="h2">
               Messages
@@ -157,7 +141,7 @@ class App extends Component {
               Github
             </Button>
             <Button size="small" color="primary">
-              Article
+              Exit
             </Button>
           </CardActions>
         </Card>
