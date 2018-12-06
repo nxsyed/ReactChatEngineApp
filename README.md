@@ -1,4 +1,4 @@
-# Chat Engine OpenGraph Example
+# React Chat App ChatEngine Example
 
 This is the example of how to add opengraph to your Chat Engine project using react with the chat engine plugin.
 
@@ -16,7 +16,7 @@ You'll need to clone the repo then install all the dependencies using a package 
 
 
 ```
-git clone https://github.com/nxsyed/Chat-Engine-OpenGraph.git master
+git clone https://github.com/nxsyed/ReactChatEngineApp.git master
 npm i
 ```
 
@@ -24,7 +24,7 @@ npm i
 
 You can create a minified version of this app using the following command:
 ```
-npm build
+npm run build
 ```
 
 ## Built With
