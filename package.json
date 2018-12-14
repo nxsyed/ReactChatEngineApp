@@ -1,7 +1,7 @@
 {
   "name": "ce-opengraph",
   "version": "0.1.0",
-  "homepage" : "http://nxsyed.github.io/ReactChatEngineApp"
+  "homepage" : "https://nxsyed.github.io/ReactChatEngineApp/"
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.0.1",
