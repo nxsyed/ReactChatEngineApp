@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import ChatEngineCore from 'chat-engine';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -13,20 +12,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
 
+import PubNubReact from 'pubnub-react';
+
 
 const now = new Date().getTime();
 const username = ['user', now].join('-');
-
-const ChatClient = ChatEngineCore.create({
-    publishKey: 'pub-c-3f89be1a-7cca-4307-8884-80b5b4855b23',
-    subscribeKey: 'sub-c-83c785b0-b219-11e8-acd6-a622109c830d'
-}, {
-    globalChannel: 'chatting'
-});
-
-ChatClient.connect(username, {
-  signedOnTime: now
-}, 'auth-key');
 
 const styles = {
   card: {
@@ -64,19 +54,27 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.chat = new ChatClient.Chat(`BasicChatApp`);
+    this.pubnub = new PubNubReact({
+        publishKey: 'pub-c-af9e408a-d4a8-473c-b591-81402cdf9aaf',
+        subscribeKey: 'sub-c-7e76d5bc-2658-11e9-9508-c2e2c4d7488a',
+        uuid: username
+    });
 
     this.state = {
       messages: [],
       chatInput: '' 
     };
+    this.pubnub.init(this);
   }
 
   sendChat = () => {
     if (this.state.chatInput) {
-        this.chat.emit('message', {
-            text: this.state.chatInput,
-            uuid: username
+        this.pubnub.publish({
+            message: {
+              text: this.state.chatInput,
+              uuid: username
+            },
+            channel: 'chatting'
         });
         this.setState({ chatInput: '' })
     }
@@ -88,16 +86,31 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.chat.on('message', (payload) => {
+    this.pubnub.subscribe({
+        channels: ['chatting'],
+        withPresence: true
+    });
 
+    this.pubnub.getMessage('chatting', (msg) => {
+          this.pubnub.hereNow(
+            {
+                channels: ["chatting"],
+                includeUUIDs: true,
+                includeState: true
+            },
+            (status, response) => {
+                console.log(status);
+                console.log(response);
+            }
+        );
+        const {text, uuid} = msg.message
         let messages = this.state.messages;
         messages.push(
-          <Message key={ this.state.messages.length } uuid={ payload.data.uuid } text={ payload.data.text }/>
+          <Message key={ this.state.messages.length } uuid={ uuid } text={ text }/>
         );
         this.setState({
             messages: messages
         });
-
     });
   }
 
@@ -105,6 +118,11 @@ class App extends Component {
     if (e.key === 'Enter') {
         this.sendChat();
     }
+  }
+  componentWillUnmount() {
+    this.pubnub.unsubscribe({
+        channels: ['chatting']
+    });
   }
 
   render(){
@@ -146,10 +164,8 @@ class App extends Component {
         </Card>
       );
     }
-  }
+}
 
 const ChatComponent = withStyles(styles)(App);
 
-ChatClient.on('$.ready', () => {
-    ReactDOM.render(<ChatComponent />, document.getElementById('root'));
-});
+ReactDOM.render(<ChatComponent />, document.getElementById('root'));

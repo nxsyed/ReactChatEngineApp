@@ -8,6 +8,8 @@
     "@material-ui/icons": "^3.0.1",
     "chat-engine": "^0.9.19",
     "gh-pages": "^2.0.1",
+    "pubnub": "^4.23.0",
+    "pubnub-react": "^1.2.0",
     "react": "^16.4.2",
     "react-document-meta": "^3.0.0-beta.2",
     "react-dom": "^16.4.2",
